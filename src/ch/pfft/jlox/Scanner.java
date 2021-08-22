@@ -100,6 +100,18 @@ public class Scanner {
                     while (peek() != '\n' && !isAtEnd()) {
                         advance();
                     }
+                } else if (match('*')) {
+                    do {
+                        while (peek() != '*' && !isAtEnd()) {
+                            if (peek() == '\n') {
+                                line++;
+                            }
+                            advance();
+                        }
+                        if (isAtEnd() || (match('*') && match('/'))) {
+                            break;
+                        }
+                    } while (true);
                 } else {
                     addToken(SLASH);
                 }
