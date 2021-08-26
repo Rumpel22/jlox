@@ -15,7 +15,8 @@ public class GenerateAST {
         String outputDir = args[0];
         defineAst(outputDir, "Expr",
                 Arrays.asList("Binary     : Expr left, Token operator, Expr right", "Grouping   : Expr expression",
-                        "Literal    : Object value", "Unary      : Token operator, Expr right"));
+                        "Literal    : Object value", "Unary      : Token operator, Expr right",
+                        "Ternary    : Expr condition, Token operator, Expr first, Expr second"));
     }
 
     private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {

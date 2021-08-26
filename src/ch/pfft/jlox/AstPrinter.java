@@ -3,6 +3,7 @@ package ch.pfft.jlox;
 import ch.pfft.jlox.Expr.Binary;
 import ch.pfft.jlox.Expr.Grouping;
 import ch.pfft.jlox.Expr.Literal;
+import ch.pfft.jlox.Expr.Ternary;
 import ch.pfft.jlox.Expr.Unary;
 
 public class AstPrinter implements Expr.Visitor<String> {
@@ -34,6 +35,11 @@ public class AstPrinter implements Expr.Visitor<String> {
         return paranthesize(expr.operator.lexeme, expr.right);
     }
 
+    @Override
+    public String visitTernaryExpr(Ternary expr) {
+        return paranthesize(":?", expr.condition, expr.first, expr.second);
+    }
+
     private String paranthesize(String name, Expr... exprs) {
         StringBuilder builder = new StringBuilder();
         builder.append("(").append(name);
@@ -53,5 +59,4 @@ public class AstPrinter implements Expr.Visitor<String> {
 
         System.out.println(new AstPrinter().print(expression));
     }
-
 }
