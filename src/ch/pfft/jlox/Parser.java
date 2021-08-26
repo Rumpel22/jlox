@@ -2,9 +2,6 @@ package ch.pfft.jlox;
 
 import java.util.List;
 
-import ch.pfft.jlox.Expr.Unary;
-import ch.pfft.jlox.TokenType.*;
-
 public class Parser {
     private static class ParseError extends RuntimeException {
     }
