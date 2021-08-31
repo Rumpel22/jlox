@@ -17,8 +17,9 @@ public class GenerateAST {
                 "Binary     : Expr left, Token operator, Expr right", "Grouping   : Expr expression",
                 "Literal    : Object value", "Unary      : Token operator, Expr right",
                 "Ternary    : Expr condition, Token operator, Expr first, Expr second", "Variable   : Token name"));
-        defineAst(outputDir, "Stmt", Arrays.asList("Expression     : Expr expression",
-                "Print          : Expr expression", "Var            : Token name, Expr initializer"));
+        defineAst(outputDir, "Stmt",
+                Arrays.asList("Block          : List<Stmt> statements", "Expression     : Expr expression",
+                        "Print          : Expr expression", "Var            : Token name, Expr initializer"));
     }
 
     private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {
