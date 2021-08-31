@@ -1,17 +1,27 @@
 package ch.pfft.jlox;
 
+import java.util.List;
+
+import ch.pfft.jlox.Expr.Assign;
 import ch.pfft.jlox.Expr.Binary;
 import ch.pfft.jlox.Expr.Grouping;
 import ch.pfft.jlox.Expr.Literal;
 import ch.pfft.jlox.Expr.Ternary;
 import ch.pfft.jlox.Expr.Unary;
+import ch.pfft.jlox.Expr.Variable;
+import ch.pfft.jlox.Stmt.Expression;
+import ch.pfft.jlox.Stmt.Print;
+import ch.pfft.jlox.Stmt.Var;
 
-public class Interpreter implements Expr.Visitor<Object> {
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
-    void interpret(Expr expression) {
+    private Environment environment = new Environment();
+
+    void interpret(List<Stmt> statements) {
         try {
-            Object value = evaluate(expression);
-            System.out.println(stringify(value));
+            for (Stmt statement : statements) {
+                execute(statement);
+            }
         } catch (RuntimeError error) {
             Lox.runtimeError(error);
         }
@@ -109,6 +119,45 @@ public class Interpreter implements Expr.Visitor<Object> {
         return expression.accept(this);
     }
 
+    private void execute(Stmt statement) {
+        statement.accept(this);
+    }
+
+    @Override
+    public Void visitExpressionStmt(Expression stmt) {
+        evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visitPrintStmt(Print stmt) {
+        Object value = evaluate(stmt.expression);
+        System.out.println(stringify(value));
+        return null;
+    }
+
+    @Override
+    public Void visitVarStmt(Var stmt) {
+        Object value = null;
+        if (stmt.initializer != null) {
+            value = evaluate(stmt.initializer);
+        }
+        environment.define(stmt.name.lexeme, value);
+        return null;
+    }
+
+    @Override
+    public Object visitAssignExpr(Assign expr) {
+        Object value = evaluate(expr.value);
+        environment.assign(expr.name, value);
+        return value;
+    }
+
+    @Override
+    public Object visitVariableExpr(Variable expr) {
+        return environment.get(expr.name);
+    }
+
     private boolean isTruthy(Object object) {
         if (object == null)
             return false;
@@ -150,5 +199,4 @@ public class Interpreter implements Expr.Visitor<Object> {
             return;
         throw new RuntimeError(operator, "Operands must be numbers.");
     }
-
 }

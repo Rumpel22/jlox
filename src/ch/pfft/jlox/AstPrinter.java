@@ -1,15 +1,22 @@
 package ch.pfft.jlox;
 
+import ch.pfft.jlox.Expr.Assign;
 import ch.pfft.jlox.Expr.Binary;
 import ch.pfft.jlox.Expr.Grouping;
 import ch.pfft.jlox.Expr.Literal;
 import ch.pfft.jlox.Expr.Ternary;
 import ch.pfft.jlox.Expr.Unary;
+import ch.pfft.jlox.Expr.Variable;
 
 public class AstPrinter implements Expr.Visitor<String> {
 
     String print(Expr expr) {
         return expr.accept(this);
+    }
+
+    @Override
+    public String visitAssignExpr(Assign expr) {
+        return paranthesize("=", expr, expr.value);
     }
 
     @Override
@@ -38,6 +45,11 @@ public class AstPrinter implements Expr.Visitor<String> {
     @Override
     public String visitTernaryExpr(Ternary expr) {
         return paranthesize(":?", expr.condition, expr.first, expr.second);
+    }
+
+    @Override
+    public String visitVariableExpr(Variable expr) {
+        return paranthesize("var", expr);
     }
 
     private String paranthesize(String name, Expr... exprs) {
