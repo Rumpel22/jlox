@@ -4,6 +4,7 @@ import ch.pfft.jlox.Expr.Assign;
 import ch.pfft.jlox.Expr.Binary;
 import ch.pfft.jlox.Expr.Grouping;
 import ch.pfft.jlox.Expr.Literal;
+import ch.pfft.jlox.Expr.Logical;
 import ch.pfft.jlox.Expr.Ternary;
 import ch.pfft.jlox.Expr.Unary;
 import ch.pfft.jlox.Expr.Variable;
@@ -50,6 +51,11 @@ public class AstPrinter implements Expr.Visitor<String> {
     @Override
     public String visitVariableExpr(Variable expr) {
         return paranthesize("var", expr);
+    }
+
+    @Override
+    public String visitLogicalExpr(Logical expr) {
+        return paranthesize(expr.operator.lexeme, expr.left, expr.right);
     }
 
     private String paranthesize(String name, Expr... exprs) {

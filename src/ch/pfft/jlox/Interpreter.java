@@ -6,11 +6,13 @@ import ch.pfft.jlox.Expr.Assign;
 import ch.pfft.jlox.Expr.Binary;
 import ch.pfft.jlox.Expr.Grouping;
 import ch.pfft.jlox.Expr.Literal;
+import ch.pfft.jlox.Expr.Logical;
 import ch.pfft.jlox.Expr.Ternary;
 import ch.pfft.jlox.Expr.Unary;
 import ch.pfft.jlox.Expr.Variable;
 import ch.pfft.jlox.Stmt.Block;
 import ch.pfft.jlox.Stmt.Expression;
+import ch.pfft.jlox.Stmt.If;
 import ch.pfft.jlox.Stmt.Print;
 import ch.pfft.jlox.Stmt.Var;
 
@@ -92,6 +94,21 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visitLogicalExpr(Logical expr) {
+        Object left = evaluate(expr.left);
+        if (expr.operator.type == TokenType.OR) {
+            if (isTruthy(left)) {
+                return left;
+            }
+        } else {
+            if (!isTruthy(left)) {
+                return left;
+            }
+        }
+        return evaluate(expr.right);
+    }
+
+    @Override
     public Object visitUnaryExpr(Unary expr) {
         Object right = evaluate(expr.right);
         switch (expr.operator.type) {
@@ -146,6 +163,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visitExpressionStmt(Expression stmt) {
         evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visitIfStmt(If stmt) {
+        if (isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.thenBranch);
+        } else if (stmt.elseBranch != null) {
+            execute(stmt.elseBranch);
+        }
         return null;
     }
 
