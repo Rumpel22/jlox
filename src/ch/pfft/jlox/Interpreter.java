@@ -15,6 +15,7 @@ import ch.pfft.jlox.Stmt.Expression;
 import ch.pfft.jlox.Stmt.If;
 import ch.pfft.jlox.Stmt.Print;
 import ch.pfft.jlox.Stmt.Var;
+import ch.pfft.jlox.Stmt.While;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
@@ -190,6 +191,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             value = evaluate(stmt.initializer);
         }
         environment.define(stmt.name.lexeme, value);
+        return null;
+    }
+
+    @Override
+    public Void visitWhileStmt(While stmt) {
+        while (isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.body);
+        }
         return null;
     }
 
