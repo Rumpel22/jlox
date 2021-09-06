@@ -18,25 +18,35 @@ public class Parser {
     List<Stmt> parse() {
         List<Stmt> statements = new ArrayList<>();
         while (!isAtEnd()) {
-            statements.add(declaration());
+            statements.add(declaration(false));
         }
         return statements;
     }
 
-    private Stmt statement() {
-        if (match(TokenType.FOR)) {
+    private Stmt statement(boolean inLoop) {
+        if (match(TokenType.BREAK)) {
+            return breakStatement(inLoop);
+        } else if (match(TokenType.FOR)) {
             return forStatement();
         } else if (match(TokenType.IF)) {
-            return ifStatement();
+            return ifStatement(inLoop);
         } else if (match(TokenType.PRINT)) {
             return printStatement();
         } else if (match(TokenType.WHILE)) {
             return whileStatement();
         } else if (match(TokenType.LEFT_BRACE)) {
-            return new Stmt.Block(block());
+            return new Stmt.Block(block(inLoop));
         } else {
             return expressionStatement();
         }
+    }
+
+    private Stmt breakStatement(boolean inLoop) {
+        if (!inLoop) {
+            throw error(previous(), "break statement only allowed within a loop.");
+        }
+        consume(TokenType.SEMICOLON, "Expect ';' after break statement.");
+        return new Stmt.Break();
     }
 
     private Stmt forStatement() {
@@ -63,7 +73,7 @@ public class Parser {
         }
         consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
 
-        Stmt body = statement();
+        Stmt body = statement(true);
 
         if (increment != null) {
             body = new Stmt.Block(Arrays.asList(body, new Stmt.Expression(increment)));
@@ -81,15 +91,15 @@ public class Parser {
         return body;
     }
 
-    private Stmt ifStatement() {
+    private Stmt ifStatement(boolean inLoop) {
         consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.");
         Expr condition = expression();
         consume(TokenType.RIGHT_PAREN, "Expect ')' after if-condition.");
 
-        Stmt thenBranch = statement();
+        Stmt thenBranch = statement(inLoop);
         Stmt elseBranch = null;
         if (match(TokenType.ELSE)) {
-            elseBranch = statement();
+            elseBranch = statement(inLoop);
         }
         return new Stmt.If(condition, thenBranch, elseBranch);
     }
@@ -116,7 +126,7 @@ public class Parser {
         consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
         Expr condition = expression();
         consume(TokenType.RIGHT_PAREN, "Expect ')' after condition.");
-        Stmt body = statement();
+        Stmt body = statement(true);
 
         return new Stmt.While(condition, body);
     }
@@ -127,11 +137,11 @@ public class Parser {
         return new Stmt.Expression(expr);
     }
 
-    private List<Stmt> block() {
+    private List<Stmt> block(boolean inLoop) {
         List<Stmt> statements = new ArrayList<>();
 
         while (!check(TokenType.RIGHT_BRACE) && !isAtEnd()) {
-            statements.add(declaration());
+            statements.add(declaration(inLoop));
         }
 
         consume(TokenType.RIGHT_BRACE, "Expect '}' after block.");
@@ -179,12 +189,12 @@ public class Parser {
         return assignment();
     }
 
-    private Stmt declaration() {
+    private Stmt declaration(boolean inLoop) {
         try {
             if (match(TokenType.VAR)) {
                 return varDeclaration();
             }
-            return statement();
+            return statement(inLoop);
         } catch (ParseError error) {
             synchronize();
             return null;

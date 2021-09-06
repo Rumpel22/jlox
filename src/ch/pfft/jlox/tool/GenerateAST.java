@@ -18,11 +18,10 @@ public class GenerateAST {
                 "Literal    : Object value", "Logical    : Expr left, Token operator, Expr right",
                 "Unary      : Token operator, Expr right",
                 "Ternary    : Expr condition, Token operator, Expr first, Expr second", "Variable   : Token name"));
-        defineAst(outputDir, "Stmt",
-                Arrays.asList("Block          : List<Stmt> statements", "Expression     : Expr expression",
-                        "If             : Expr condition, Stmt thenBranch, Stmt elseBranch",
-                        "Print          : Expr expression", "Var            : Token name, Expr initializer",
-                        "While          : Expr condition, Stmt body"));
+        defineAst(outputDir, "Stmt", Arrays.asList("Break          : ", "Block          : List<Stmt> statements",
+                "Expression     : Expr expression", "If             : Expr condition, Stmt thenBranch, Stmt elseBranch",
+                "Print          : Expr expression", "Var            : Token name, Expr initializer",
+                "While          : Expr condition, Stmt body"));
     }
 
     private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {
@@ -64,6 +63,9 @@ public class GenerateAST {
         writer.println("    " + className + "(" + fieldList + ") {");
         String fields[] = fieldList.split(", ");
         for (String field : fields) {
+            if (field.isEmpty()) {
+                continue;
+            }
             String name = field.split(" ")[1];
             writer.println("    this." + name + " = " + name + ";");
         }
@@ -75,6 +77,9 @@ public class GenerateAST {
         writer.println("    }\n");
 
         for (String field : fields) {
+            if (field.isEmpty()) {
+                continue;
+            }
             writer.println("    final " + field + ";");
         }
 
