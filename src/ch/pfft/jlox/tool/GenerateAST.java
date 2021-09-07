@@ -19,9 +19,9 @@ public class GenerateAST {
                 "Unary      : Token operator, Expr right",
                 "Ternary    : Expr condition, Token operator, Expr first, Expr second", "Variable   : Token name"));
         defineAst(outputDir, "Stmt", Arrays.asList("Break          : ", "Block          : List<Stmt> statements",
-                "Expression     : Expr expression", "If             : Expr condition, Stmt thenBranch, Stmt elseBranch",
-                "Print          : Expr expression", "Var            : Token name, Expr initializer",
-                "While          : Expr condition, Stmt body"));
+                "Continue       : ", "Expression     : Expr expression",
+                "If             : Expr condition, Stmt thenBranch, Stmt elseBranch", "Print          : Expr expression",
+                "Var            : Token name, Expr initializer", "While          : Expr condition, Stmt body"));
     }
 
     private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {

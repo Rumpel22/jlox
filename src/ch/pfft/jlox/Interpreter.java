@@ -12,6 +12,7 @@ import ch.pfft.jlox.Expr.Unary;
 import ch.pfft.jlox.Expr.Variable;
 import ch.pfft.jlox.Stmt.Block;
 import ch.pfft.jlox.Stmt.Break;
+import ch.pfft.jlox.Stmt.Continue;
 import ch.pfft.jlox.Stmt.Expression;
 import ch.pfft.jlox.Stmt.If;
 import ch.pfft.jlox.Stmt.Print;
@@ -20,6 +21,9 @@ import ch.pfft.jlox.Stmt.While;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private static class Break extends RuntimeException {
+    }
+
+    private static class Continue extends RuntimeException {
     }
 
     private Environment environment = new Environment();
@@ -151,6 +155,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitContinueStmt(ch.pfft.jlox.Stmt.Continue stmt) {
+        throw new Continue();
+    }
+
+    @Override
     public Void visitBlockStmt(Block stmt) {
         executeBlock(stmt.statements, new Environment(environment));
         return null;
@@ -209,6 +218,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 execute(stmt.body);
             } catch (Break b) {
                 return null;
+            } catch (Continue c) {
+                // Intentionally left blank, do nothing and jump back to the condition
             }
         }
         return null;

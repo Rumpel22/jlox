@@ -26,6 +26,8 @@ public class Parser {
     private Stmt statement(boolean inLoop) {
         if (match(TokenType.BREAK)) {
             return breakStatement(inLoop);
+        } else if (match(TokenType.CONTINUE)) {
+            return continueStatement(inLoop);
         } else if (match(TokenType.FOR)) {
             return forStatement();
         } else if (match(TokenType.IF)) {
@@ -47,6 +49,14 @@ public class Parser {
         }
         consume(TokenType.SEMICOLON, "Expect ';' after break statement.");
         return new Stmt.Break();
+    }
+
+    private Stmt continueStatement(boolean inLoop) {
+        if (!inLoop) {
+            throw error(previous(), "continue statement only allowed within a loop.");
+        }
+        consume(TokenType.SEMICOLON, "Expect ';' after break statement.");
+        return new Stmt.Continue();
     }
 
     private Stmt forStatement() {
