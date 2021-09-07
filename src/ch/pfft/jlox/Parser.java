@@ -85,20 +85,7 @@ public class Parser {
 
         Stmt body = statement(true);
 
-        if (increment != null) {
-            body = new Stmt.Block(Arrays.asList(body, new Stmt.Expression(increment)));
-        }
-
-        if (condition == null) {
-            condition = new Expr.Literal(true);
-        }
-        body = new Stmt.While(condition, body);
-
-        if (initializer != null) {
-            body = new Stmt.Block(Arrays.asList(initializer, body));
-        }
-
-        return body;
+        return new Stmt.For(initializer, condition, increment, body);
     }
 
     private Stmt ifStatement(boolean inLoop) {
@@ -138,7 +125,7 @@ public class Parser {
         consume(TokenType.RIGHT_PAREN, "Expect ')' after condition.");
         Stmt body = statement(true);
 
-        return new Stmt.While(condition, body);
+        return new Stmt.For(null, condition, null, body);
     }
 
     private Stmt expressionStatement() {

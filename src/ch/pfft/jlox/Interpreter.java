@@ -11,13 +11,11 @@ import ch.pfft.jlox.Expr.Ternary;
 import ch.pfft.jlox.Expr.Unary;
 import ch.pfft.jlox.Expr.Variable;
 import ch.pfft.jlox.Stmt.Block;
-import ch.pfft.jlox.Stmt.Break;
-import ch.pfft.jlox.Stmt.Continue;
 import ch.pfft.jlox.Stmt.Expression;
+import ch.pfft.jlox.Stmt.For;
 import ch.pfft.jlox.Stmt.If;
 import ch.pfft.jlox.Stmt.Print;
 import ch.pfft.jlox.Stmt.Var;
-import ch.pfft.jlox.Stmt.While;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private static class Break extends RuntimeException {
@@ -212,14 +210,20 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
-    public Void visitWhileStmt(While stmt) {
-        while (isTruthy(evaluate(stmt.condition))) {
+    public Void visitForStmt(For stmt) {
+        if (stmt.initializer != null) {
+            execute(stmt.initializer);
+        }
+        while (stmt.condition != null ? isTruthy(evaluate(stmt.condition)) : true) {
             try {
                 execute(stmt.body);
             } catch (Break b) {
                 return null;
             } catch (Continue c) {
-                // Intentionally left blank, do nothing and jump back to the condition
+                // Intentionally left blank, do nothing and go ahead to the increment step
+            }
+            if (stmt.increment != null) {
+                evaluate(stmt.increment);
             }
         }
         return null;

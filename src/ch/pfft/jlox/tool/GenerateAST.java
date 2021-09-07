@@ -18,10 +18,12 @@ public class GenerateAST {
                 "Literal    : Object value", "Logical    : Expr left, Token operator, Expr right",
                 "Unary      : Token operator, Expr right",
                 "Ternary    : Expr condition, Token operator, Expr first, Expr second", "Variable   : Token name"));
-        defineAst(outputDir, "Stmt", Arrays.asList("Break          : ", "Block          : List<Stmt> statements",
-                "Continue       : ", "Expression     : Expr expression",
-                "If             : Expr condition, Stmt thenBranch, Stmt elseBranch", "Print          : Expr expression",
-                "Var            : Token name, Expr initializer", "While          : Expr condition, Stmt body"));
+        defineAst(outputDir, "Stmt",
+                Arrays.asList("Break          : ", "Block          : List<Stmt> statements", "Continue       : ",
+                        "Expression     : Expr expression",
+                        "For            : Stmt initializer, Expr condition, Expr increment, Stmt body",
+                        "If             : Expr condition, Stmt thenBranch, Stmt elseBranch",
+                        "Print          : Expr expression", "Var            : Token name, Expr initializer"));
     }
 
     private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {

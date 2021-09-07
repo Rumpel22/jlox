@@ -12,13 +12,13 @@ abstract class Stmt {
 
     R visitExpressionStmt(Expression stmt);
 
+    R visitForStmt(For stmt);
+
     R visitIfStmt(If stmt);
 
     R visitPrintStmt(Print stmt);
 
     R visitVarStmt(Var stmt);
-
-    R visitWhileStmt(While stmt);
   }
 
   static class Break extends Stmt {
@@ -69,6 +69,25 @@ abstract class Stmt {
     final Expr expression;
   }
 
+  static class For extends Stmt {
+    For(Stmt initializer, Expr condition, Expr increment, Stmt body) {
+      this.initializer = initializer;
+      this.condition = condition;
+      this.increment = increment;
+      this.body = body;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitForStmt(this);
+    }
+
+    final Stmt initializer;
+    final Expr condition;
+    final Expr increment;
+    final Stmt body;
+  }
+
   static class If extends Stmt {
     If(Expr condition, Stmt thenBranch, Stmt elseBranch) {
       this.condition = condition;
@@ -112,21 +131,6 @@ abstract class Stmt {
 
     final Token name;
     final Expr initializer;
-  }
-
-  static class While extends Stmt {
-    While(Expr condition, Stmt body) {
-      this.condition = condition;
-      this.body = body;
-    }
-
-    @Override
-    <R> R accept(Visitor<R> visitor) {
-      return visitor.visitWhileStmt(this);
-    }
-
-    final Expr condition;
-    final Stmt body;
   }
 
   abstract <R> R accept(Visitor<R> visitor);
