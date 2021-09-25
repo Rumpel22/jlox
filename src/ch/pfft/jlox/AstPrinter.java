@@ -2,6 +2,7 @@ package ch.pfft.jlox;
 
 import ch.pfft.jlox.Expr.Assign;
 import ch.pfft.jlox.Expr.Binary;
+import ch.pfft.jlox.Expr.Call;
 import ch.pfft.jlox.Expr.Grouping;
 import ch.pfft.jlox.Expr.Literal;
 import ch.pfft.jlox.Expr.Logical;
@@ -58,6 +59,11 @@ public class AstPrinter implements Expr.Visitor<String> {
         return paranthesize(expr.operator.lexeme, expr.left, expr.right);
     }
 
+    @Override
+    public String visitCallExpr(Call expr) {
+        return paranthesize("fn", expr);
+    }
+
     private String paranthesize(String name, Expr... exprs) {
         StringBuilder builder = new StringBuilder();
         builder.append("(").append(name);
@@ -77,4 +83,5 @@ public class AstPrinter implements Expr.Visitor<String> {
 
         System.out.println(new AstPrinter().print(expression));
     }
+
 }

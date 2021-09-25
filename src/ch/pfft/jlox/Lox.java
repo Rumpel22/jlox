@@ -62,10 +62,12 @@ public class Lox {
         if (hadError) {
             return;
         }
-        if (!statements.isEmpty() && statements.get(statements.size() - 1) instanceof Stmt.Expression) {
-            Stmt.Expression expr = (Stmt.Expression) (statements.get(statements.size() - 1));
-            statements.set(statements.size() - 1, new Stmt.Print(expr.expression));
-        }
+        // if (!statements.isEmpty() && statements.get(statements.size() - 1) instanceof
+        // Stmt.Expression) {
+        // Stmt.Expression expr = (Stmt.Expression) (statements.get(statements.size() -
+        // 1));
+        // statements.set(statements.size() - 1, new Stmt.Print(expr.expression));
+        // }
         interpreter.interpret(statements);
     }
 
