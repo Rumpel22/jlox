@@ -147,7 +147,10 @@ public class Parser {
     }
 
     private Stmt.Function function(String kind, boolean inLoop) {
-        Token name = consume(TokenType.IDENTIFIER, "Expect " + kind + "name.");
+        Token name = null;
+        if (kind != "lambda") {
+            name = consume(TokenType.IDENTIFIER, "Expect " + kind + " name.");
+        }
         consume(TokenType.LEFT_PAREN, "Expect '(' after " + kind + " name.");
         List<Token> parameters = new ArrayList<>();
         if (!check(TokenType.RIGHT_PAREN)) {
@@ -361,6 +364,10 @@ public class Parser {
             Expr expr = expression();
             consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
+        }
+        if (match(TokenType.FUN)) {
+            Stmt.Function lambda = function("lambda", false);
+            return new Expr.Lambda(lambda);
         }
 
         throw error(peek(), "Expect expression");

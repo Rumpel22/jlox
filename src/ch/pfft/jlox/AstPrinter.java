@@ -1,9 +1,12 @@
 package ch.pfft.jlox;
 
+import java.util.stream.Collectors;
+
 import ch.pfft.jlox.Expr.Assign;
 import ch.pfft.jlox.Expr.Binary;
 import ch.pfft.jlox.Expr.Call;
 import ch.pfft.jlox.Expr.Grouping;
+import ch.pfft.jlox.Expr.Lambda;
 import ch.pfft.jlox.Expr.Literal;
 import ch.pfft.jlox.Expr.Logical;
 import ch.pfft.jlox.Expr.Ternary;
@@ -29,6 +32,13 @@ public class AstPrinter implements Expr.Visitor<String> {
     @Override
     public String visitGroupingExpr(Grouping expr) {
         return paranthesize("group", expr.expression);
+    }
+
+    @Override
+    public String visitLambdaExpr(Lambda expr) {
+        var params = expr.function.params.stream().map(token -> token.lexeme).collect(Collectors.joining(", "));
+
+        return paranthesize("lambda", new Expr.Literal(params));
     }
 
     @Override

@@ -7,6 +7,7 @@ import ch.pfft.jlox.Expr.Assign;
 import ch.pfft.jlox.Expr.Binary;
 import ch.pfft.jlox.Expr.Call;
 import ch.pfft.jlox.Expr.Grouping;
+import ch.pfft.jlox.Expr.Lambda;
 import ch.pfft.jlox.Expr.Literal;
 import ch.pfft.jlox.Expr.Logical;
 import ch.pfft.jlox.Expr.Ternary;
@@ -139,6 +140,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Object visitGroupingExpr(Grouping expr) {
         return evaluate(expr.expression);
+    }
+
+    @Override
+    public Object visitLambdaExpr(Lambda expr) {
+        return new LoxFunction(expr.function, environment);
     }
 
     @Override
