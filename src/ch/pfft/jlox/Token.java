@@ -16,4 +16,20 @@ class Token {
     public String toString() {
         return type + " " + lexeme + " " + literal;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Token)) {
+            return false;
+        }
+
+        Token c = (Token) o;
+
+        // Compare the data members and return accordingly
+        return type.compareTo(c.type) == 0 && lexeme.equals(c.lexeme);
+    }
 }

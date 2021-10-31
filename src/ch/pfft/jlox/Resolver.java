@@ -1,5 +1,6 @@
 package ch.pfft.jlox;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     private final Stack<Map<String, Boolean>> scopes = new Stack<>();
     private FunctionType currentFunction = FunctionType.NONE;
     private boolean inLoop = false;
+    private final Stack<ArrayList<Token>> unusedLocalVariables = new Stack<>();
 
     Resolver(Interpreter interpreter) {
         this.interpreter = interpreter;
@@ -228,10 +230,15 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     private void beginScope() {
         scopes.push(new HashMap<String, Boolean>());
+        unusedLocalVariables.push(new ArrayList<Token>());
     }
 
     private void endScope() {
         scopes.pop();
+        var unusedVars = unusedLocalVariables.pop();
+        for (var unusedVar : unusedVars) {
+            Lox.error(unusedVar, "Variable not used");
+        }
     }
 
     private void declare(Token name) {
@@ -244,6 +251,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             Lox.error(name, "Already a variable with this name in this scope.");
         }
         scope.put(name.lexeme, false);
+        unusedLocalVariables.peek().add(name);
     }
 
     private void define(Token name) {
@@ -257,6 +265,8 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     private void resolveLocal(Expr expr, Token name) {
         for (int i = scopes.size() - 1; i >= 0; i--) {
             if (scopes.get(i).containsKey(name.lexeme)) {
+                unusedLocalVariables.get(i).remove(name);
+
                 interpreter.resolve(expr, scopes.size() - 1 - i);
                 return;
             }
