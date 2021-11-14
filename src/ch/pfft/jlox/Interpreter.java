@@ -197,7 +197,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
-    public Object visitThisExpr(Expr.This expr) {
+    public Object visitThisExpr(This expr) {
         return lookUpVariable(expr.keyword, expr);
     }
 
@@ -239,12 +239,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
-    public Void visitBreakStmt(ch.pfft.jlox.Stmt.Break stmt) {
+    public Void visitBreakStmt(Stmt.Break stmt) {
         throw new Break();
     }
 
     @Override
-    public Void visitContinueStmt(ch.pfft.jlox.Stmt.Continue stmt) {
+    public Void visitContinueStmt(Stmt.Continue stmt) {
         throw new Continue();
     }
 

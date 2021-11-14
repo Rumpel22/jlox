@@ -3,8 +3,6 @@ package ch.pfft.jlox;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.stream.IIOByteBuffer;
-
 class LoxClass implements LoxCallable {
     final String name;
     private final Map<String, LoxFunction> methods;
