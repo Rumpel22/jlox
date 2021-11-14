@@ -5,11 +5,14 @@ import java.util.stream.Collectors;
 import ch.pfft.jlox.Expr.Assign;
 import ch.pfft.jlox.Expr.Binary;
 import ch.pfft.jlox.Expr.Call;
+import ch.pfft.jlox.Expr.Get;
 import ch.pfft.jlox.Expr.Grouping;
 import ch.pfft.jlox.Expr.Lambda;
 import ch.pfft.jlox.Expr.Literal;
 import ch.pfft.jlox.Expr.Logical;
+import ch.pfft.jlox.Expr.Set;
 import ch.pfft.jlox.Expr.Ternary;
+import ch.pfft.jlox.Expr.This;
 import ch.pfft.jlox.Expr.Unary;
 import ch.pfft.jlox.Expr.Variable;
 
@@ -92,6 +95,21 @@ public class AstPrinter implements Expr.Visitor<String> {
                 new Token(TokenType.STAR, "*", null, 1), new Expr.Grouping(new Expr.Literal(45.67)));
 
         System.out.println(new AstPrinter().print(expression));
+    }
+
+    @Override
+    public String visitGetExpr(Get expr) {
+        return paranthesize(expr.name.lexeme, expr.object);
+    }
+
+    @Override
+    public String visitSetExpr(Set expr) {
+        return paranthesize(expr.name.lexeme, expr.object);
+    }
+
+    @Override
+    public String visitThisExpr(This expr) {
+        return "this";
     }
 
 }
