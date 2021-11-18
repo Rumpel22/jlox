@@ -20,13 +20,15 @@ public class GenerateAST {
                 "Set        : Expr object, Token name, Expr value", "This       : Token keyword",
                 "Unary      : Token operator, Expr right",
                 "Ternary    : Expr condition, Token operator, Expr first, Expr second", "Variable   : Token name"));
-        defineAst(outputDir, "Stmt", Arrays.asList("Break          : Token keyword",
-                "Block          : List<Stmt> statements", "Class          : Token name, List<Stmt.Function> methods",
-                "Continue       : Token keyword", "Expression     : Expr expression",
-                "Function       : Token name, List<Token> params, List<Stmt> body",
-                "For            : Stmt initializer, Expr condition, Expr increment, Stmt body",
-                "If             : Expr condition, Stmt thenBranch, Stmt elseBranch", "Print          : Expr expression",
-                "Return         : Token keyword, Expr value", "Var            : Token name, Expr initializer"));
+        defineAst(outputDir, "Stmt",
+                Arrays.asList("Break          : Token keyword", "Block          : List<Stmt> statements",
+                        "Class          : Token name, List<Stmt.Function> methods, List<Stmt.Function> statics",
+                        "Continue       : Token keyword", "Expression     : Expr expression",
+                        "Function       : Token name, List<Token> params, List<Stmt> body",
+                        "For            : Stmt initializer, Expr condition, Expr increment, Stmt body",
+                        "If             : Expr condition, Stmt thenBranch, Stmt elseBranch",
+                        "Print          : Expr expression", "Return         : Token keyword, Expr value",
+                        "Var            : Token name, Expr initializer"));
     }
 
     private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {

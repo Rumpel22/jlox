@@ -3,11 +3,12 @@ package ch.pfft.jlox;
 import java.util.List;
 import java.util.Map;
 
-class LoxClass implements LoxCallable {
+class LoxClass extends LoxInstance implements LoxCallable {
     final String name;
     private final Map<String, LoxFunction> methods;
 
     LoxClass(String name, Map<String, LoxFunction> methods) {
+        super(null);
         this.name = name;
         this.methods = methods;
     }

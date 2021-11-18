@@ -28,7 +28,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     private enum FunctionType {
-        NONE, FUNCTION, INITIALIZER, METHOD,
+        NONE, FUNCTION, INITIALIZER, METHOD, STATIC
     }
 
     private enum ClassType {
@@ -62,6 +62,9 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
                 declaration = FunctionType.INITIALIZER;
             }
             resolveFunction(method, declaration);
+        }
+        for (Stmt.Function method : stmt.statics) {
+            resolveFunction(method, FunctionType.STATIC);
         }
         endScope();
         currentClass = enclosingClass;
@@ -227,6 +230,10 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     public Void visitThisExpr(This expr) {
         if (currentClass == ClassType.NONE) {
             Lox.error(expr.keyword, "Can't use 'this' outside of a class.");
+            return null;
+        }
+        if (currentFunction == FunctionType.STATIC) {
+            Lox.error(expr.keyword, "Can't use 'this' in a static method.");
             return null;
         }
 
