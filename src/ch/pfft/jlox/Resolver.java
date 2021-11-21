@@ -285,9 +285,11 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         currentFunction = type;
 
         beginScope();
-        for (Token name : stmt.params) {
-            declare(name);
-            define(name);
+        if (stmt.params != null) {
+            for (Token name : stmt.params) {
+                declare(name);
+                define(name);
+            }
         }
         resolve(stmt.body);
         endScope();

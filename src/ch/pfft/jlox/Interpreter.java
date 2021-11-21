@@ -148,7 +148,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Object visitGetExpr(Get expr) {
         Object object = evaluate(expr.object);
         if (object instanceof LoxInstance) {
-            return ((LoxInstance) object).get(expr.name);
+            Object value = ((LoxInstance) object).get(expr.name);
+            if (value instanceof LoxFunction) {
+                LoxFunction function = (LoxFunction) value;
+                if (function.arity() == -1) {
+                    return function.call(this, new ArrayList<Object>());
+                }
+            }
+            return value;
         }
         throw new RuntimeError(expr.name, "Only instances have properties.");
     }
