@@ -11,6 +11,7 @@ import ch.pfft.jlox.Expr.Lambda;
 import ch.pfft.jlox.Expr.Literal;
 import ch.pfft.jlox.Expr.Logical;
 import ch.pfft.jlox.Expr.Set;
+import ch.pfft.jlox.Expr.Super;
 import ch.pfft.jlox.Expr.Ternary;
 import ch.pfft.jlox.Expr.This;
 import ch.pfft.jlox.Expr.Unary;
@@ -110,6 +111,11 @@ public class AstPrinter implements Expr.Visitor<String> {
     @Override
     public String visitThisExpr(This expr) {
         return "this";
+    }
+
+    @Override
+    public String visitSuperExpr(Super expr) {
+        return paranthesize("super of " + expr.keyword.lexeme);
     }
 
 }
